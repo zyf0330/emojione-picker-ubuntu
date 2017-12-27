@@ -62,5 +62,6 @@ else
 	read -p "Press enter to install emojione-picker or Ctrl-C to abort"
 	install_emojionepicker
 	echo "Installation completed."
+	echo "If you want to use \"Write emoji instead of using clipboard\", install xdotool"
 fi
 
