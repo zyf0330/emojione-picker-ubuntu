@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 #
 
@@ -14,8 +14,8 @@ from collections import OrderedDict
 import re
 
 # Fix enconding in older Python versions
+from importlib import reload
 reload(sys)
-sys.setdefaultencoding('utf8')
 
 # Import GTK
 from gi import require_version
@@ -264,7 +264,7 @@ def refresh_recent_submenu():
 # Type character using xdootool [Experimental]
 def type_xdotool(text):
     time.sleep(0.1)
-    subprocess.Popen(["xdotool", "type", text.decode('unicode-escape')])
+    subprocess.Popen(["xdotool", "type", text])
     return False # Glib.idle_add needs this
 
 # Click response
@@ -282,10 +282,10 @@ def item_response(self, w):
     chars = w["unicode"].split("-")
     output = ""
     for char in chars:
-        output = output + '\\U' + (char.zfill(8))
+        output = output + chr(int(char, 16))
 
         clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        GLib.idle_add(clipboard.set_text,output.decode('unicode-escape'), -1)
+        GLib.idle_add(clipboard.set_text,output, -1)
     if settings["paste"]==True:
         GLib.idle_add(type_xdotool,output)
 
@@ -297,7 +297,7 @@ def item_response(self, w):
 
     # Remove item from recent if already present
     try:
-        for k in recent.keys():
+        for k in list(recent):
             if recent[k]["emoji_order"] == w["emoji_order"]:
                 del recent[k]
     except ValueError:
@@ -314,7 +314,7 @@ def item_response(self, w):
         for k in recent.keys():
             if recent[k]["recent_order"] > biggestindex:
                 biggestindex = recent[k]["recent_order"]
-	nextbiggest = biggestindex
+                nextbiggest = biggestindex
         for i in range (1, settings["recent"]):
             nextbiggest_candidate = 0
             for k in recent.keys():
@@ -345,9 +345,6 @@ if __name__ == "__main__":
         sock.connect(sockname)
     except:
 
-        # Calling GObject.threads_init() is not needed for PyGObject 3.10.2+
-        GObject.threads_init()
-
         # Initialize notifications
         Notify.init("emojione-picker")
 
@@ -375,7 +372,7 @@ if __name__ == "__main__":
         for category in categories:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directory + "/assets/categories/" + category + ".svg", iconsizes[1], iconsizes[2])
             img = Gtk.Image.new_from_pixbuf(pixbuf)
-            category_item[category] = Gtk.ImageMenuItem(category.title())
+            category_item[category] = Gtk.ImageMenuItem.new_with_label(category.title())
             item_settings = category_item[category].get_settings()
             item_settings.set_property('gtk-menu-images', True)
             GLib.idle_add(category_item[category].set_image, img)
@@ -412,7 +409,7 @@ if __name__ == "__main__":
                                 # Create group item
                                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directory + "/assets/svg/" + groups_data[emoji_group]["icon"] + ".svg", iconsizes[1], iconsizes[2])
                                 img = Gtk.Image.new_from_pixbuf(pixbuf)
-                                item_groups[emoji_group] = Gtk.ImageMenuItem(groups_data[emoji_group]["name"].title())
+                                item_groups[emoji_group] = Gtk.ImageMenuItem.new_with_label(groups_data[emoji_group]["name"].title())
                                 item_settings = item_groups[emoji_group].get_settings()
                                 item_settings.set_property('gtk-menu-images', True)
                                 GLib.idle_add(item_groups[emoji_group].set_image, img)
@@ -424,7 +421,7 @@ if __name__ == "__main__":
                             if tones_re.match(sorted_data[key]["name"]) == None:
                                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directory + "/assets/svg/" + sorted_data[key]["unicode"] + ".svg", iconsizes[1], iconsizes[2])
                                 img = Gtk.Image.new_from_pixbuf(pixbuf)
-                                items[sorted_data[key]["unicode"]] = Gtk.ImageMenuItem(sorted_data[key]["name"].title())
+                                items[sorted_data[key]["unicode"]] = Gtk.ImageMenuItem.new_with_label(sorted_data[key]["name"].title())
                                 item_settings = items[sorted_data[key]["unicode"]].get_settings()
                                 item_settings.set_property('gtk-menu-images', True)
                                 GLib.idle_add(items[sorted_data[key]["unicode"]].set_image, img)
@@ -439,7 +436,7 @@ if __name__ == "__main__":
                                 # Not toned emoji (aka simplest case), just add to menu
                                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directory + "/assets/svg/" + sorted_data[key]["unicode"] + ".svg", iconsizes[1], iconsizes[2])
                                 img = Gtk.Image.new_from_pixbuf(pixbuf)
-                                items[sorted_data[key]["unicode"]] = Gtk.ImageMenuItem(sorted_data[key]["name"].title())
+                                items[sorted_data[key]["unicode"]] = Gtk.ImageMenuItem.new_with_label(sorted_data[key]["name"].title())
                                 item_settings = items[sorted_data[key]["unicode"]].get_settings()
                                 item_settings.set_property('gtk-menu-images', True)
                                 GLib.idle_add(items[sorted_data[key]["unicode"]].set_image, img)
@@ -465,7 +462,7 @@ if __name__ == "__main__":
                                         # Append untoned icon to submenu
                                         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directory + "/assets/svg/" + sorted_data[key]["unicode"] + ".svg", iconsizes[1], iconsizes[2])
                                         img = Gtk.Image.new_from_pixbuf(pixbuf)
-                                        items[sorted_data[key]["unicode"]] = Gtk.ImageMenuItem(sorted_data[key]["name"].title())
+                                        items[sorted_data[key]["unicode"]] = Gtk.ImageMenuItem.new_with_label(sorted_data[key]["name"].title())
                                         item_settings = items[tone_group].get_settings()
                                         item_settings.set_property('gtk-menu-images', True)
                                         GLib.idle_add(items[sorted_data[key]["unicode"]].set_image, img)
@@ -476,7 +473,7 @@ if __name__ == "__main__":
                                     # Append toned emoji to toned submenu
                                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directory + "/assets/svg/" + sorted_data[key]["unicode"] + ".svg", iconsizes[1], iconsizes[2])
                                     img = Gtk.Image.new_from_pixbuf(pixbuf)
-                                    items[sorted_data[key]["unicode"]] = Gtk.ImageMenuItem(sorted_data[key]["name"].title())
+                                    items[sorted_data[key]["unicode"]] = Gtk.ImageMenuItem.new_with_label(sorted_data[key]["name"].title())
                                     item_settings = items[sorted_data[key]["unicode"]].get_settings()
                                     item_settings.set_property('gtk-menu-images', True)
                                     GLib.idle_add(items[sorted_data[key]["unicode"]].set_image, img)
@@ -528,13 +525,13 @@ if __name__ == "__main__":
         GLib.idle_add(separator.show)
 
         # Create search item
-        search_item = Gtk.MenuItem("Search Emoji")
+        search_item = Gtk.MenuItem.new_with_label("Search Emoji")
         GLib.idle_add(menu.append,search_item)
         GLib.idle_add(search_item.show)
         search_item.connect("activate", open_search_window, "Search")
 
         # Create settings item
-        settings_item = Gtk.MenuItem("Settings...")
+        settings_item = Gtk.MenuItem.new_with_label("Settings...")
         GLib.idle_add(menu.append,settings_item)
         GLib.idle_add(settings_item.show)
         settings_item.connect("activate", open_settings_window, "Settings")
@@ -545,7 +542,7 @@ if __name__ == "__main__":
         GLib.idle_add(separator.show)
 
         # Create exit item
-        exit_item = Gtk.MenuItem("Exit")
+        exit_item = Gtk.MenuItem.new_with_label("Exit")
         GLib.idle_add(menu.append,exit_item)
         GLib.idle_add(exit_item.show)
         exit_item.connect("activate", exit, "Exit")
@@ -564,7 +561,7 @@ if __name__ == "__main__":
             sock.listen(1)
             GLib.io_add_watch(sock, GLib.IO_IN, handle_sock_signal)
         except:
-            print 'Could not listen to socket!'
+            print('Could not listen to socket!')
 
         # Run server
         signal.signal(signal.SIGINT, signal.SIG_DFL)
