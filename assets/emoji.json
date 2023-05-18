@@ -19018,6 +19018,28 @@
 		"aliases_ascii": [],
 		"keywords": []
 	},
+	"face_with_raised_eyebrow": {
+		"unicode": "1f928",
+		"unicode_alternates": "",
+		"name": "face with raised eyebrow",
+		"shortname": ":face_with_raised_eyebrow:",
+		"category": "people",
+		"emoji_order": "10110",
+		"aliases": [],
+		"aliases_ascii": [],
+		"keywords": []
+	},
+	"star_struck_face": {
+		"unicode": "1f929",
+		"unicode_alternates": "",
+		"name": "star struck face",
+		"shortname": ":star_struck_face:",
+		"category": "people",
+		"emoji_order": "10111",
+		"aliases": [":star:"],
+		"aliases_ascii": [],
+		"keywords": []
+	},
 	"prince": {
 		"unicode": "1f934",
 		"unicode_alternates": "",
