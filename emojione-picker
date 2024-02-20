@@ -287,8 +287,16 @@ def item_response(self, w):
     if settings["paste"]==True:
         GLib.idle_add(type_xdotool,output)
     else:
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY)
         GLib.idle_add(clipboard.set_text,output, -1)
+
+        #  p = subprocess.Popen(
+          #  ["xclip", "-i", "-selection", "primary"],
+          #  stdin=subprocess.PIPE
+        #  )
+        #  p.communicate(text.encode())
+
+        #  subprocess.Popen(["wl-copy", "-po", text])
 
     # Show notification
     if settings["notifications"]==True:
