@@ -264,7 +264,7 @@ def refresh_recent_submenu():
 # Type character using xdootool [Experimental]
 def type_xdotool(text):
     time.sleep(0.1) # wait focus on input textbox
-    subprocess.Popen(["xdotool", "type", text])
+    subprocess.Popen(["xdotool", "type", "--delay", "300", text])
     return False # Glib.idle_add needs this
 
 # Click response
