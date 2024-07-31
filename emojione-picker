@@ -400,7 +400,7 @@ if __name__ == "__main__":
             sorted_data = OrderedDict(sorted_data)
 
         # Load icons into menu items
-        tones_re = re.compile('(.*) tone[ ]?\d', re.IGNORECASE)
+        tones_re = re.compile('(.*) tone[ ]?\\d', re.IGNORECASE)
         item_groups = {}
         submenu_groups = {}
         items = {}
@@ -497,7 +497,7 @@ if __name__ == "__main__":
                                         pass
                                     else:
                                         desired_tone = settings["toned"]
-                                        current_tone = re.search("\d",sorted_data[key]["name"]).group(0)
+                                        current_tone = re.search("\\d",sorted_data[key]["name"]).group(0)
                                         if desired_tone == int(current_tone):
                                             # Replace item with desired tone
                                             toned_key = key
