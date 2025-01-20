@@ -264,7 +264,8 @@ def refresh_recent_submenu():
 # Type character using xdootool [Experimental]
 def type_xdotool(text):
     time.sleep(0.1) # wait focus on input textbox
-    subprocess.Popen(["xdotool", "type", "--delay", "300", text])
+    # --delay should be greater than xset auto-repeat delay
+    subprocess.Popen(["xdotool", "type", "--delay", "250", text])
     return False # Glib.idle_add needs this
 
 # Click response
@@ -286,17 +287,16 @@ def item_response(self, w):
 
     if settings["paste"]==True:
         GLib.idle_add(type_xdotool,output)
-    else:
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY)
-        GLib.idle_add(clipboard.set_text,output, -1)
+    clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+    GLib.idle_add(clipboard.set_text,output, -1)
 
-        #  p = subprocess.Popen(
-          #  ["xclip", "-i", "-selection", "primary"],
-          #  stdin=subprocess.PIPE
-        #  )
-        #  p.communicate(text.encode())
+    #  p = subprocess.Popen(
+      #  ["xclip", "-i", "-selection", "clipboard"],
+      #  stdin=subprocess.PIPE
+    #  )
+    #  p.communicate(output.encode())
 
-        #  subprocess.Popen(["wl-copy", "-po", text])
+    #  subprocess.Popen(["wl-copy", "-o", output])
 
     # Show notification
     if settings["notifications"]==True:
