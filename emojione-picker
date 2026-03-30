@@ -35,6 +35,13 @@ for d in directories:
 # Categories definitions
 categories = ["recent", "people", "food", "nature", "objects", "activity", "travel", "flags", "symbols"]
 
+with open(directory + "/assets/categories.json") as categories_json_file:
+  try:
+      categories = json.load(categories_json_file)
+      categories.insert(0, "recent")
+  except:
+    print('Could not load categories.json!')
+
 # Settings handling
 default_settings = settings = {
     "toned": -1,
@@ -379,12 +386,12 @@ if __name__ == "__main__":
         category_item = {}
         category_menu = {}
         for category in categories:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directory + "/assets/categories/" + category + ".svg", iconsizes[1], iconsizes[2])
-            img = Gtk.Image.new_from_pixbuf(pixbuf)
+            #  pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(directory + "/assets/categories/" + category + ".svg", iconsizes[1], iconsizes[2])
+            #  img = Gtk.Image.new_from_pixbuf(pixbuf)
             category_item[category] = Gtk.ImageMenuItem.new_with_label(category.title())
             item_settings = category_item[category].get_settings()
             item_settings.set_property('gtk-menu-images', True)
-            GLib.idle_add(category_item[category].set_image, img)
+            #  GLib.idle_add(category_item[category].set_image, img)
             category_menu[category] = Gtk.Menu()
             category_item[category].set_submenu(category_menu[category]);
 
